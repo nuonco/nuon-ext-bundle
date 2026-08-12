@@ -54,4 +54,3 @@ Releases are built from the `nuonco/nuon` monorepo at the ref recorded in [`MONO
 Update that file, tag `vX.Y.Z`, and push the tag; the release workflow cross-compiles
 `nuon-ext-bundle-<os>-<arch>` for linux/darwin × amd64/arm64 and attaches the binaries to the GitHub
 release, where `nuon ext install` picks them up.
->>>>>>> conflict 1 of 1 ends
