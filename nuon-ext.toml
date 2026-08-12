@@ -1,0 +1,7 @@
+[extension]
+name = "bundle"
+description = "Deploy and operate Nuon air-gap bundles offline"
+
+[extension.auth]
+requires_token = false
+requires_org = false
