@@ -38,6 +38,10 @@ AWS account.
 The same binary also works standalone (without the `nuon` CLI) as `nuon-ext-bundle`; air-gapped hosts that
 cannot reach GitHub receive it inside the bundle itself.
 
+See [WALKTHROUGH.md](WALKTHROUGH.md) for the full end-to-end flow: vendor side (app sync, bundle create,
+download) and customer side (verify, inspect, init, push, stack prepare, CloudFormation launch, status,
+logs, results).
+
 ## Development
 
 The CLI source lives in this repository (`main.go` + `cmd/`). Shared platform machinery — the app-config
