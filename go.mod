@@ -43,8 +43,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.84.0
 	github.com/aws/aws-sdk-go-v2/service/sts v1.41.2
 	github.com/charmbracelet/huh v0.8.0
-	github.com/nuonco/nuon v0.19.1120-0.20260812215010-35d7b1e7fd51
-	github.com/nuonco/nuon/sdks/nuon-go v0.92.2-0.20260812215010-35d7b1e7fd51
+	github.com/nuonco/nuon v0.19.1120-0.20260817061534-390c4bb70c65
+	github.com/nuonco/nuon/sdks/nuon-go v0.92.2-0.20260817061534-390c4bb70c65
 	github.com/oklog/ulid/v2 v2.1.1
 	github.com/opencontainers/go-digest v1.0.0
 	github.com/opencontainers/image-spec v1.1.1
@@ -191,7 +191,7 @@ require (
 	github.com/muesli/termenv v0.16.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/nexus-rpc/sdk-go v0.6.0 // indirect
-	github.com/nuonco/nuon/sdks/nuon-runner-go v0.0.0-20260812215010-35d7b1e7fd51 // indirect
+	github.com/nuonco/nuon/sdks/nuon-runner-go v0.0.0-20260817061534-390c4bb70c65 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/pkg/errors v0.9.1 // indirect
