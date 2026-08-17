@@ -14,21 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Read monorepo ref
-        id: ref
-        run: echo "ref=$(cat MONOREPO_REF | tr -d '[:space:]')" >> "$GITHUB_OUTPUT"
-
-      - name: Checkout nuonco/nuon
-        uses: actions/checkout@v4
-        with:
-          repository: nuonco/nuon
-          ref: ${{ steps.ref.outputs.ref }}
-          path: nuon
-
       - uses: actions/setup-go@v5
         with:
-          go-version-file: nuon/go.mod
-          cache-dependency-path: nuon/go.sum
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+
+      - name: Test
+        run: go test ./...
 
       - name: Build binaries
         run: |
@@ -38,8 +30,8 @@ jobs:
             arch="${platform#*/}"
             echo "building $os/$arch"
             CGO_ENABLED=0 GOOS="$os" GOARCH="$arch" \
-              go -C nuon build -ldflags "-s -w" \
-              -o "$GITHUB_WORKSPACE/dist/nuon-ext-bundle-$os-$arch" ./bins/nuon-bundle
+              go build -ldflags "-s -w" \
+              -o "dist/nuon-ext-bundle-$os-$arch" .
           done
           (cd dist && shasum -a 256 nuon-ext-bundle-* > checksums.txt)
 
@@ -49,4 +41,4 @@ jobs:
         run: |
           gh release create "$GITHUB_REF_NAME" dist/* \
             --title "$GITHUB_REF_NAME" \
-            --notes "Built from nuonco/nuon @ ${{ steps.ref.outputs.ref }}"
+            --notes "nuon-bundle CLI, built from $GITHUB_SHA"

@@ -40,17 +40,36 @@ cannot reach GitHub receive it inside the bundle itself.
 
 ## Development
 
-The source of truth lives in the Nuon monorepo at `bins/nuon-bundle`; this repository only packages it as a
-CLI extension. To build locally against a monorepo checkout:
+The CLI source lives in this repository (`main.go` + `cmd/`). Shared platform machinery — the app-config
+compiler, plan generation, and the air-gap envelope/state contract also consumed by the runner and
+control plane — is imported from the [`github.com/nuonco/nuon`](https://github.com/nuonco/nuon) Go module
+at a pinned version in [`go.mod`](go.mod).
 
 ```sh
-make build NUON_REPO_ROOT=/path/to/nuon
+make build
 nuon ext install .
 ```
 
+To develop against unpushed monorepo changes, add a local replace:
+
+```sh
+go mod edit -replace github.com/nuonco/nuon=/path/to/nuon
+```
+
+### Bumping the monorepo dependency
+
+```sh
+go get github.com/nuonco/nuon@<commit> \
+       github.com/nuonco/nuon/sdks/nuon-go@<commit> \
+       github.com/nuonco/nuon/sdks/nuon-runner-go@<commit>
+go mod tidy
+```
+
+The replace directives in `go.mod` mirror the monorepo's own replace block (replaces do not propagate to
+consumers); re-check them against the monorepo `go.mod` when bumping.
+
 ## Releasing
 
-Releases are built from the `nuonco/nuon` monorepo at the ref recorded in [`MONOREPO_REF`](MONOREPO_REF).
-Update that file, tag `vX.Y.Z`, and push the tag; the release workflow cross-compiles
-`nuon-ext-bundle-<os>-<arch>` for linux/darwin × amd64/arm64 and attaches the binaries to the GitHub
+Tag `vX.Y.Z` and push the tag; the release workflow tests, cross-compiles
+`nuon-ext-bundle-<os>-<arch>` for linux/darwin × amd64/arm64, and attaches the binaries to the GitHub
 release, where `nuon ext install` picks them up.
