@@ -131,12 +131,11 @@ func TestRewriteRootTemplateMissingRootAsset(t *testing.T) {
 }
 
 func TestRewriteRunnerStackAsset(t *testing.T) {
-	raw := []byte("        UserData:\n          Fn::Base64:\n            Fn::Join:\n            - \"\\n\"\n            - - \"#!/bin/bash\"\n              - Fn::Sub: curl ${RunnerInitScriptUrl} | bash\n")
+	raw := []byte("        UserData:\n          Fn::Base64:\n            Fn::Join:\n            - \"\\n\"\n            - - \"#!/bin/bash\"\n              - Fn::Sub: curl -fsSL --retry 5 --retry-all-errors --retry-delay 2 --max-time 60 -o /tmp/nuon-init.sh ${RunnerInitScriptUrl}\n")
 	rewritten, err := rewriteRunnerStackAsset(raw)
 	require.NoError(t, err)
-	require.NotContains(t, string(rewritten), "curl ${RunnerInitScriptUrl}")
+	require.NotContains(t, string(rewritten), "curl -fsSL --retry 5 --retry-all-errors --retry-delay 2 --max-time 60 -o /tmp/nuon-init.sh ${RunnerInitScriptUrl}")
 	require.Contains(t, string(rewritten), "aws s3 cp ${RunnerInitScriptUrl} /tmp/nuon-init.sh")
-	require.Contains(t, string(rewritten), "bash /tmp/nuon-init.sh")
 
 	_, err = rewriteRunnerStackAsset([]byte("no fetch command here"))
 	require.Error(t, err)
@@ -193,7 +192,7 @@ func TestStackUploadsRewritesInstallID(t *testing.T) {
 	dir := t.TempDir()
 	vpcRaw := []byte("RoleName: " + frozen + "-vpc-flow-logs\n")
 	vpcDigest, vpcSize := writePackedAsset(t, dir, "application/x-yaml", vpcRaw)
-	runnerRaw := []byte("UserData: curl ${RunnerInitScriptUrl} | bash\nLogGroup: runner-" + frozen + "\n")
+	runnerRaw := []byte("UserData: curl -fsSL --retry 5 --retry-all-errors --retry-delay 2 --max-time 60 -o /tmp/nuon-init.sh ${RunnerInitScriptUrl}\nLogGroup: runner-" + frozen + "\n")
 	runnerDigest, runnerSize := writePackedAsset(t, dir, "application/x-yaml", runnerRaw)
 	o := &opened{
 		dir: dir,

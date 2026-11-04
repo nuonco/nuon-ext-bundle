@@ -55,10 +55,11 @@ func customerAssetURL(bucket, region, key string) string {
 	return fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", bucket, region, key)
 }
 
-const connectedInitFetch = "curl ${RunnerInitScriptUrl} | bash"
+const connectedInitFetch = "curl -fsSL --retry 5 --retry-all-errors --retry-delay 2 --max-time 60 -o /tmp/nuon-init.sh ${RunnerInitScriptUrl}"
 
 // Retry because first boot can race attachment of the instance role's asset policy.
-const airgapInitFetch = "for i in $(seq 1 60); do aws s3 cp ${RunnerInitScriptUrl} /tmp/nuon-init.sh && break; sleep 10; done; bash /tmp/nuon-init.sh"
+// The template verifies RunnerInitScriptChecksum and runs the file after this download.
+const airgapInitFetch = "for i in $(seq 1 60); do aws s3 cp ${RunnerInitScriptUrl} /tmp/nuon-init.sh && break; sleep 10; done"
 
 func rewriteRunnerStackAsset(raw []byte) ([]byte, error) {
 	if !bytes.Contains(raw, []byte(connectedInitFetch)) {
